@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenoxis</title>
+    <!-- 
+    NOTE: For best performance, download and self-host these files instead of using CDNs. 
+    You can also bundle them using a tool like Webpack or Vite.
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #10b981;
+            --accent: #8b5cf6;
+            --text: #1f2937;
+            --background: #f9fafb;
+            --card: #ffffff;
+        }
+
+        .dark {
+            --primary: #60a5fa;
+            --secondary: #34d399;
+            --accent: #a78bfa;
+            --text: #f3f4f6;
+            --background: #111827;
+            --card: #1f2937;
+        }
+
+        .video-theme {
+            --primary: #ef4444;
+            --secondary: #f97316;
+            --accent: #f43f5e;
+            --text: #f3f4f6;
+            --background: #0f172a;
+            --card: #1e293b;
+        }
+
+        .design-theme {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --text: #1f2937;
+            --background: #f8fafc;
+            --card: #ffffff;
+        }
+
+        .dev-theme {
+            --primary: #10b981;
+            --secondary: #3b82f6;
+            --accent: #8b5cf6;
+            --text: #f3f4f6;
+            --background: #1e1e2e;
+            --card: #2d2d42;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            transition: all 0.5s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bg-primary {
+            background-color: var(--primary);
+        }
+
+        .bg-secondary {
+            background-color: var(--secondary);
+        }
+
+        .bg-accent {
+            background-color: var(--accent);
+        }
+
+        .bg-card {
+            background-color: var(--card);
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-secondary {
+            color: var(--secondary);
+        }
+
+        .text-accent {
+            color: var(--accent);
+        }
+
+        .border-primary {
+            border-color: var(--primary);
+        }
+
+        .border-secondary {
+            border-color: var(--secondary);
+        }
+
+        .border-accent {
+            border-color: var(--accent);
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+            }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .service-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Improved mobile timeline */
+        .process-item {
+            position: relative;
+        }
+        .process-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            height: 100%;
+            width: 2px;
+            background-color: var(--primary);
+        }
+        @media (min-width: 768px) {
+            .process-item:not(:last-child)::before {
+                content: none;
+            }
+        }
+        /* Mobile circles for process timeline */
+        .process-circle {
+            position: absolute;
+            left: 10px;
+            top: 0;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        @media (min-width: 768px) {
+            .process-circle {
+                position: relative;
+                left: auto;
+                transform: none;
+            }
+        }
+
+        .team-member:hover .team-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .team-overlay {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card {
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card.active {
+            transform: scale(1.05);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .skill-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 1.5s ease;
+        }
+
+        .counter {
+            transition: all 1s ease;
+        }
+
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .theme-transition * {
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .scroll-down {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .code-bg {
+            background-image: radial-gradient(var(--accent) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="theme-transition font-sans antialiased">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-card bg-opacity-80 backdrop-filter backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-primary">Scenoxis</span>
+                    </a>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#home" class="nav-link px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="#services" class="nav-link px-3 py-2 text-sm font-medium">Services</a>
+                    <a href="#portfolio" class="nav-link px-3 py-2 text-sm font-medium">Portfolio</a>
+                    <a href="#about" class="nav-link px-3 py-2 text-sm font-medium">About</a>
+                    <a href="#contact" class="nav-link px-3 py-2 text-sm font-medium">Contact</a>
+                    <button id="theme-toggle" aria-label="Toggle theme" class="p-2 rounded-full focus:outline-none">
+                        <i class="fas fa-moon text-gray-600 dark:text-gray-300"></i>
+                    </button>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button id="mobile-menu-button" aria-label="Open main menu" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-card">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#services" class="block px-3 py-2 rounded-md text-base font-medium">Services</a>
+                <a href="#portfolio" class="block px-3 py-2 rounded-md text-base font-medium">Portfolio</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+                <button id="mobile-theme-toggle" aria-label="Toggle theme" class="block px-3 py-2 rounded-md text-base font-medium w-full text-left">Toggle Theme</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="particles" id="particles-js"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center z-10">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                <span class="text-primary">Crafting</span> Digital <span class="text-accent">Experiences</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-12 max-w-3xl mx-auto">
+                We transform ideas into visually stunning and technically flawless digital solutions.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#services" class="px-8 py-4 bg-primary text-white rounded-full font-semibold hover:bg-opacity-90 transition duration-300 transform hover:scale-105">
+                    Explore Services
+                </a>
+                <a href="#contact" class="px-8 py-4 border-2 border-primary text-primary rounded-full font-semibold hover:bg-primary hover:text-white transition duration-300 transform hover:scale-105">
+                    Get in Touch
+                </a>
+            </div>
+            <div class="mt-20 scroll-down">
+                <a href="#services" class="text-primary" aria-label="Scroll down to services">
+                    <i class="fas fa-chevron-down text-3xl"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Our <span class="text-primary">Services</span></h2>
+                <p class="text-lg max-w-2xl mx-auto">
+                    We offer comprehensive digital solutions tailored to your unique needs.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Video Editing Card -->
+                <div class="service-card bg-card rounded-xl p-8 shadow-lg cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-primary transition-all duration-300"
+                     onclick="changeTheme('video')">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-video text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Video Editing</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            Professional video editing services that bring your story to life with cinematic quality.
+                        </p>
+                        <div class="flex justify-center flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-primary bg-opacity-10 text-primary rounded-full text-sm">Premiere Pro</span>
+                            <span class="px-3 py-1 bg-primary bg-opacity-10 text-primary rounded-full text-sm">After Effects</span>
+                            <span class="px-3 py-1 bg-primary bg-opacity-10 text-primary rounded-full text-sm">DaVinci Resolve</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphic Design Card -->
+                <div class="service-card bg-card rounded-xl p-8 shadow-lg cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-secondary transition-all duration-300"
+                     onclick="changeTheme('design')">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-secondary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-paint-brush text-secondary text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Graphic Design</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            Visually compelling designs that communicate your brand's message effectively.
+                        </p>
+                        <div class="flex justify-center flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-secondary bg-opacity-10 text-secondary rounded-full text-sm">Photoshop</span>
+                            <span class="px-3 py-1 bg-secondary bg-opacity-10 text-secondary rounded-full text-sm">Illustrator</span>
+                            <span class="px-3 py-1 bg-secondary bg-opacity-10 text-secondary rounded-full text-sm">InDesign</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Development Card -->
+                <div class="service-card bg-card rounded-xl p-8 shadow-lg cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-accent transition-all duration-300"
+                     onclick="changeTheme('dev')">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-accent bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-code text-accent text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Web Development</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            Custom websites and web applications built with cutting-edge technologies.
+                        </p>
+                        <div class="flex justify-center flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-accent bg-opacity-10 text-accent rounded-full text-sm">React</span>
+                            <span class="px-3 py-1 bg-accent bg-opacity-10 text-accent rounded-full text-sm">Node.js</span>
+                            <span class="px-3 py-1 bg-accent bg-opacity-10 text-accent rounded-full text-sm">Tailwind</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="counter">
+                    <div class="text-4xl md:text-6xl font-bold mb-2" data-count="250">0</div>
+                    <div class="text-lg">Projects Completed</div>
+                </div>
+                <div class="counter">
+                    <div class="text-4xl md:text-6xl font-bold mb-2" data-count="120">0</div>
+                    <div class="text-lg">Happy Clients</div>
+                </div>
+                <div class="counter">
+                    <div class="text-4xl md:text-6xl font-bold mb-2" data-count="15">0</div>
+                    <div class="text-lg">Team Members</div>
+                </div>
+                <div class="counter">
+                    <div class="text-4xl md:text-6xl font-bold mb-2" data-count="8">0</div>
+                    <div class="text-lg">Years Experience</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-20 bg-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Our <span class="text-primary">Portfolio</span></h2>
+                <p class="text-lg max-w-2xl mx-auto">
+                    Explore our latest projects and see how we've helped our clients succeed.
+                </p>
+            </div>
+
+            <!-- 
+            NOTE: For a real-world application, portfolio items should be fetched dynamically
+            from an API or headless CMS to make them easy to update.
+            -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Portfolio Item 1 -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg portfolio-item">
+                    <!-- Image Optimization Note: Add srcset for different screen sizes -->
+                    <img src="https://source.unsplash.com/random/600x400/?video-editing" alt="A high-energy video trailer for a product launch." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300 p-6">
+                        <h3 class="text-white text-xl font-bold mb-2">Cinematic Trailer</h3>
+                        <p class="text-gray-300 text-center mb-4">A high-energy trailer for a tech startup's product launch.</p>
+                        <a href="#" class="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium">View Project</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 2 -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg portfolio-item">
+                    <img src="https://source.unsplash.com/random/600x400/?branding" alt="A complete brand identity design for a fashion label." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300 p-6">
+                        <h3 class="text-white text-xl font-bold mb-2">Brand Identity</h3>
+                        <p class="text-gray-300 text-center mb-4">Complete branding package for a sustainable fashion label.</p>
+                        <a href="#" class="px-4 py-2 bg-secondary text-white rounded-full text-sm font-medium">View Project</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 3 -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg portfolio-item">
+                    <img src="https://source.unsplash.com/random/600x400/?website" alt="An e-commerce website with inventory management." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300 p-6">
+                        <h3 class="text-white text-xl font-bold mb-2">E-commerce Platform</h3>
+                        <p class="text-gray-300 text-center mb-4">Custom online store with advanced inventory management.</p>
+                        <a href="#" class="px-4 py-2 bg-accent text-white rounded-full text-sm font-medium">View Project</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 4 -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg portfolio-item">
+                    <img src="https://source.unsplash.com/random/600x400/?animation" alt="An animated explainer video for a financial app." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300 p-6">
+                        <h3 class="text-white text-xl font-bold mb-2">Explainer Video</h3>
+                        <p class="text-gray-300 text-center mb-4">Animated explainer video for a financial services app.</p>
+                        <a href="#" class="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium">View Project</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 5 -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg portfolio-item">
+                    <img src="https://source.unsplash.com/random/600x400/?poster" alt="Marketing materials and posters for a music festival." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300 p-6">
+                        <h3 class="text-white text-xl font-bold mb-2">Event Campaign</h3>
+                        <p class="text-gray-300 text-center mb-4">Marketing materials for a major music festival.</p>
+                        <a href="#" class="px-4 py-2 bg-secondary text-white rounded-full text-sm font-medium">View Project</a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Item 6 -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg portfolio-item">
+                    <img src="https://source.unsplash.com/random/600x400/?web-app" alt="A custom SaaS analytics dashboard for a software company." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300 p-6">
+                        <h3 class="text-white text-xl font-bold mb-2">SaaS Dashboard</h3>
+                        <p class="text-gray-300 text-center mb-4">Custom analytics dashboard for a B2B software company.</p>
+                        <a href="#" class="px-4 py-2 bg-accent text-white rounded-full text-sm font-medium">View Project</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="#" class="inline-flex items-center px-6 py-3 border border-primary text-primary rounded-full font-medium hover:bg-primary hover:text-white transition duration-300">
+                    View All Projects
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-gray-100 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Client <span class="text-primary">Testimonials</span></h2>
+                <p class="text-lg max-w-2xl mx-auto">
+                    Don't just take our word for it. Here's what our clients say about us.
+                </p>
+            </div>
+
+            <div class="relative" role="region" aria-label="Client Testimonials Carousel">
+                <div class="testimonial-carousel overflow-hidden">
+                    <!-- The testimonials will be dynamically added here by JavaScript -->
+                    <div class="flex transition-transform duration-500 ease-in-out" aria-live="polite">
+                    </div>
+                </div>
+
+                <button class="testimonial-prev absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md" aria-controls="testimonial-carousel-content" aria-label="Previous testimonial">
+                    <i class="fas fa-chevron-left text-primary"></i>
+                </button>
+                <button class="testimonial-next absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md" aria-controls="testimonial-carousel-content" aria-label="Next testimonial">
+                    <i class="fas fa-chevron-right text-primary"></i>
+                </button>
+            </div>
+
+            <div class="flex justify-center mt-8">
+                <div class="flex space-x-2 testimonial-dots">
+                    <!-- Dots will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="py-20 bg-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Our <span class="text-primary">Process</span></h2>
+                <p class="text-lg max-w-2xl mx-auto">
+                    A structured approach to ensure quality and efficiency in every project.
+                </p>
+            </div>
+
+            <div class="relative">
+                <div class="hidden md:block absolute left-1/2 top-0 h-full w-1 bg-gradient-to-b from-primary to-accent transform -translate-x-1/2"></div>
+                
+                <div class="space-y-8 md:space-y-16">
+                    <!-- Process Step 1 -->
+                    <div class="relative md:flex justify-between items-center process-item">
+                        <div class="md:w-5/12 mb-8 md:mb-0 md:pr-8 md:text-right">
+                            <h3 class="text-2xl font-bold mb-2">Discovery</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                We start by understanding your business, goals, and target audience to create a solid foundation.
+                            </p>
+                        </div>
+                        <div class="process-circle md:w-16 md:h-16 rounded-full bg-primary flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">1</span>
+                        </div>
+                        <div class="md:w-5/12"></div>
+                    </div>
+
+                    <!-- Process Step 2 -->
+                    <div class="relative md:flex justify-between items-center process-item">
+                        <div class="md:w-5/12"></div>
+                        <div class="process-circle md:w-16 md:h-16 rounded-full bg-secondary flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">2</span>
+                        </div>
+                        <div class="md:w-5/12 mb-8 md:mb-0 md:pl-8">
+                            <h3 class="text-2xl font-bold mb-2">Planning</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                We develop a detailed project plan with milestones, deliverables, and timelines.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Process Step 3 -->
+                    <div class="relative md:flex justify-between items-center process-item">
+                        <div class="md:w-5/12 mb-8 md:mb-0 md:pr-8 md:text-right">
+                            <h3 class="text-2xl font-bold mb-2">Design</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Our creative team crafts visually stunning designs that align with your brand identity.
+                            </p>
+                        </div>
+                        <div class="process-circle md:w-16 md:h-16 rounded-full bg-accent flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">3</span>
+                        </div>
+                        <div class="md:w-5/12"></div>
+                    </div>
+
+                    <!-- Process Step 4 -->
+                    <div class="relative md:flex justify-between items-center process-item">
+                        <div class="md:w-5/12"></div>
+                        <div class="process-circle md:w-16 md:h-16 rounded-full bg-primary flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">4</span>
+                        </div>
+                        <div class="md:w-5/12 mb-8 md:mb-0 md:pl-8">
+                            <h3 class="text-2xl font-bold mb-2">Development</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                Our developers bring the designs to life with clean, efficient, and scalable code.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Process Step 5 -->
+                    <div class="relative md:flex justify-between items-center process-item">
+                        <div class="md:w-5/12 mb-8 md:mb-0 md:pr-8 md:text-right">
+                            <h3 class="text-2xl font-bold mb-2">Delivery</h3>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                We conduct thorough testing and provide training before the final handover.
+                            </p>
+                        </div>
+                        <div class="process-circle md:w-16 md:h-16 rounded-full bg-secondary flex items-center justify-center">
+                            <span class="text-white text-2xl font-bold">5</span>
+                        </div>
+                        <div class="md:w-5/12"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="py-20 bg-gray-100 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Our <span class="text-primary">Expertise</span></h2>
+                    <p class="text-lg mb-8">
+                        With a team of specialists in various disciplines, we bring diverse skills to every project.
+                    </p>
+                    <a href="#" class="inline-flex items-center px-6 py-3 border border-primary text-primary rounded-full font-medium hover:bg-primary hover:text-white transition duration-300">
+                        Download Company Brochure
+                        <i class="fas fa-download ml-2"></i>
+                    </a>
+                </div>
+
+                <div>
+                    <div class="mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium">Video Production</span>
+                            <span>95%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 95%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium">Graphic Design</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 90%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium">Web Development</span>
+                            <span>92%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 92%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium">UI/UX Design</span>
+                            <span>88%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 88%"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium">Brand Strategy</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">About <span class="text-primary">Scenoxis</span></h2>
+                <p class="text-lg max-w-2xl mx-auto">
+                    We're a passionate team of creatives and technologists dedicated to digital excellence.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Our Story</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Founded in 2015, Scenoxis began as a small design studio with a big vision. Over the years, we've grown into a full-service digital agency serving clients worldwide.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Our mission is to bridge the gap between creativity and technology, delivering solutions that are not only beautiful but also highly functional and user-friendly.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        What sets us apart is our collaborative approach. We work closely with our clients throughout the entire process, ensuring the final product exceeds expectations.
+                    </p>
+                </div>
+                <div class="relative">
+                    <img src="https://source.unsplash.com/random/800x600/?office" alt="A modern and spacious office environment with computers and comfortable furniture." class="rounded-xl shadow-lg w-full" loading="lazy">
+                    <div class="absolute -bottom-6 -right-6 bg-primary p-4 rounded-xl shadow-lg hidden md:block">
+                        <div class="text-white text-center">
+                            <div class="text-3xl font-bold">8+</div>
+                            <div class="text-sm">Years Experience</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mb-12">
+                <h3 class="text-2xl md:text-3xl font-bold mb-6">Meet Our <span class="text-primary">Team</span></h3>
+                <p class="text-lg max-w-2xl mx-auto">
+                    A diverse group of talented individuals united by a passion for innovation.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Team Member 1 -->
+                <div class="team-member relative rounded-xl overflow-hidden">
+                    <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="A team member named Emma Wilson, the Creative Director." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="team-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center p-4 text-center">
+                        <h4 class="text-white text-xl font-bold mb-1">Emma Wilson</h4>
+                        <p class="text-primary mb-3">Creative Director</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Leads our design team with 10+ years of experience in visual storytelling.
+                        </p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="text-white hover:text-primary"><i class="fab fa-behance"></i></a>
+                            <a href="#" class="text-white hover:text-primary"><i class="fab fa-dribbble"></i></a>
+                            <a href="#" class="text-white hover:text-primary"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="team-member relative rounded-xl overflow-hidden">
+                    <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="A team member named David Chen, the Lead Developer." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="team-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center p-4 text-center">
+                        <h4 class="text-white text-xl font-bold mb-1">David Chen</h4>
+                        <p class="text-secondary mb-3">Lead Developer</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Full-stack developer specializing in React, Node.js, and cloud architecture.
+                        </p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="text-white hover:text-secondary"><i class="fab fa-github"></i></a>
+                            <a href="#" class="text-white hover:text-secondary"><i class="fab fa-stack-overflow"></i></a>
+                            <a href="#" class="text-white hover:text-secondary"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="team-member relative rounded-xl overflow-hidden">
+                    <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="A team member named Sophia Martinez, the Video Producer." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="team-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center p-4 text-center">
+                        <h4 class="text-white text-xl font-bold mb-1">Sophia Martinez</h4>
+                        <p class="text-accent mb-3">Video Producer</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Award-winning filmmaker with expertise in cinematic storytelling.
+                        </p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="text-white hover:text-accent"><i class="fab fa-vimeo"></i></a>
+                            <a href="#" class="text-white hover:text-accent"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="text-white hover:text-accent"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Member 4 -->
+                <div class="team-member relative rounded-xl overflow-hidden">
+                    <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="A team member named James Wilson, the Project Manager." class="w-full h-64 object-cover" loading="lazy">
+                    <div class="team-overlay absolute inset-0 bg-black bg-opacity-70 flex flex-col justify-center items-center p-4 text-center">
+                        <h4 class="text-white text-xl font-bold mb-1">James Wilson</h4>
+                        <p class="text-primary mb-3">Project Manager</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Ensures seamless project execution and client communication.
+                        </p>
+                        <div class="flex space-x-3">
+                            <a href="#" class="text-white hover:text-primary"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white hover:text-primary"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="text-white hover:text-primary"><i class="fas fa-globe"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-primary text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to Bring Your Vision to Life?</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Let's create something amazing together. Get in touch with us today to discuss your project.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#contact" class="px-8 py-4 bg-white text-primary rounded-full font-semibold hover:bg-opacity-90 transition duration-300 transform hover:scale-105">
+                    Start Your Project
+                </a>
+                <a href="tel:+1234567890" class="px-8 py-4 border-2 border-white text-white rounded-full font-semibold hover:bg-white hover:text-primary transition duration-300 transform hover:scale-105">
+                    <i class="fas fa-phone-alt mr-2"></i> Call Us Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-card">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">Get In <span class="text-primary">Touch</span></h2>
+                <p class="text-lg max-w-2xl mx-auto">
+                    Have a project in mind or want to learn more about our services? We'd love to hear from you.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <!-- 
+                    NOTE: This form is a frontend-only example. For a real site, connect it to a backend service like Formspree, Netlify Forms, or a custom API endpoint to process submissions.
+                    -->
+                    <form class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium mb-1">Name</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-card">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium mb-1">Email</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-card">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="subject" class="block text-sm font-medium mb-1">Subject</label>
+                            <input type="text" id="subject" name="subject" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-card">
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium mb-1">Message</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-card"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full px-6 py-4 bg-primary text-white rounded-full font-semibold hover:bg-opacity-90 transition duration-300 transform hover:scale-105 flex items-center justify-center">
+                                <i class="fas fa-paper-plane mr-2"></i> Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="bg-gray-100 dark:bg-gray-800 p-8 rounded-xl h-full">
+                        <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-full">
+                                    <i class="fas fa-map-marker-alt text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Our Location</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">123 Creative Street, Digital City, CA 90210</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-full">
+                                    <i class="fas fa-envelope text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Email Us</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">hello@Scenoxis.com</p>
+                                    <p class="text-gray-600 dark:text-gray-300">support@Scenoxis.com</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 bg-primary bg-opacity-10 p-3 rounded-full">
+                                    <i class="fas fa-phone-alt text-primary text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h4 class="font-medium">Call Us</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
+                                    <p class="text-gray-600 dark:text-gray-300">Mon-Fri: 9am-6pm</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="font-medium mb-4">Follow Us</h4>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary hover:bg-opacity-20 transition duration-300" aria-label="Follow us on Behance">
+                                    <i class="fab fa-behance"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary hover:bg-opacity-20 transition duration-300" aria-label="Follow us on Dribbble">
+                                    <i class="fab fa-dribbble"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary hover:bg-opacity-20 transition duration-300" aria-label="Follow us on Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary hover:bg-opacity-20 transition duration-300" aria-label="Follow us on LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center text-primary hover:bg-opacity-20 transition duration-300" aria-label="Follow us on GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215573813864!2d-73.987844924164!3d40.7484409713896!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1683032532041!5m2!1sen!2sus" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-primary rounded-xl p-8 md:p-12 text-center text-white">
+                <h2 class="text-2xl md:text-4xl font-bold mb-4">Stay Updated</h2>
+                <p class="text-lg mb-8 max-w-2xl mx-auto">
+                    Subscribe to our newsletter for the latest trends, tips, and project showcases.
+                </p>
+                <form class="max-w-md mx-auto">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-lg focus:outline-none text-gray-900" aria-label="Email address for newsletter">
+                        <button type="submit" class="px-6 py-3 bg-white text-primary rounded-lg font-semibold hover:bg-opacity-90 transition duration-300">
+                            Subscribe
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-card py-12 border-t border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Scenoxis</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        Crafting digital experiences that inspire and engage.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary" aria-label="Our Facebook page"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary" aria-label="Our Twitter profile"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary" aria-label="Our Instagram profile"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary" aria-label="Our LinkedIn profile"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Video Editing</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Graphic Design</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Web Development</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">UI/UX Design</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Branding</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">About Us</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Our Team</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Careers</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Blog</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Help Center</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">FAQ</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 dark:text-gray-300 mb-4 md:mb-0">
+                    © 2023 Scenoxis. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Privacy Policy</a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Terms of Service</a>
+                    <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-primary">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Store and retrieve theme preference
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.add(savedTheme);
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        const html = document.documentElement;
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+        });
+
+        mobileThemeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const newTheme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon();
+            mobileMenu.classList.add('hidden');
+        });
+
+        function updateThemeIcon() {
+            const icon = themeToggle.querySelector('i');
+            if (html.classList.contains('dark')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+        updateThemeIcon();
+
+        // Service theme switching
+        function changeTheme(theme) {
+            // Remove all theme classes first
+            html.classList.remove('video-theme', 'design-theme', 'dev-theme');
+            
+            // Add the selected theme class
+            if (theme === 'video') {
+                html.classList.add('video-theme');
+                html.classList.add('dark');
+            } else if (theme === 'design') {
+                html.classList.add('design-theme');
+                html.classList.remove('dark');
+            } else if (theme === 'dev') {
+                html.classList.add('dev-theme');
+                html.classList.add('dark');
+            }
+            
+            // Update theme icon if needed
+            updateThemeIcon();
+        }
+
+        // Testimonial carousel (Dynamically loaded)
+        const testimonialsData = [
+            {
+                name: "Sarah Johnson",
+                title: "Marketing Director, TechCorp",
+                image: "https://randomuser.me/api/portraits/women/43.jpg",
+                quote: "Scenoxis transformed our brand identity with their exceptional design work. Their attention to detail and creative approach resulted in a visual identity that perfectly represents our company values."
+            },
+            {
+                name: "Michael Chen",
+                title: "CEO, StartupX",
+                image: "https://randomuser.me/api/portraits/men/32.jpg",
+                quote: "The web development team at Scenoxis built us a custom e-commerce platform that has increased our conversion rate by 35%. Their technical expertise and problem-solving skills are unmatched."
+            },
+            {
+                name: "Emily Rodriguez",
+                title: "Creative Director, MediaHouse",
+                image: "https://randomuser.me/api/portraits/women/65.jpg",
+                quote: "Their video production team created a series of promotional videos that perfectly captured our brand's essence. The editing was flawless, and they delivered ahead of schedule. We'll definitely work with them again."
+            }
+        ];
+
+        const carouselContainer = document.querySelector('.testimonial-carousel .flex');
+        const dotsContainer = document.querySelector('.testimonial-dots');
+        let currentTestimonial = 0;
+
+        function renderTestimonials() {
+            carouselContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            testimonialsData.forEach((testimonial, index) => {
+                const testimonialHTML = `
+                    <div class="testimonial-card min-w-full px-4">
+                        <div class="bg-card p-8 rounded-xl shadow-lg">
+                            <div class="flex items-center mb-6">
+                                <img src="${testimonial.image}" alt="Profile picture of ${testimonial.name}" class="w-16 h-16 rounded-full object-cover">
+                                <div class="ml-4">
+                                    <h4 class="text-lg font-bold">${testimonial.name}</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">${testimonial.title}</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 dark:text-gray-300 italic">"${testimonial.quote}"</p>
+                            <div class="mt-4 flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                carouselContainer.insertAdjacentHTML('beforeend', testimonialHTML);
+
+                const dot = document.createElement('button');
+                dot.classList.add('testimonial-dot', 'w-3', 'h-3', 'rounded-full', 'bg-gray-300', 'dark:bg-gray-600', 'opacity-30');
+                dot.setAttribute('aria-label', `Go to testimonial ${index + 1}`);
+                dot.addEventListener('click', () => showTestimonial(index));
+                dotsContainer.appendChild(dot);
+            });
+
+            showTestimonial(0);
+        }
+
+        function showTestimonial(index) {
+            const testimonials = document.querySelectorAll('.testimonial-card');
+            const dots = document.querySelectorAll('.testimonial-dot');
+
+            testimonials.forEach((testimonial, i) => {
+                if (i === index) {
+                    testimonial.classList.add('active');
+                } else {
+                    testimonial.classList.remove('active');
+                }
+            });
+            
+            dots.forEach((dot, i) => {
+                dot.classList.remove('bg-primary', 'opacity-100');
+                dot.classList.add('bg-gray-300', 'dark:bg-gray-600', 'opacity-30');
+            });
+            dots[index].classList.remove('bg-gray-300', 'dark:bg-gray-600', 'opacity-30');
+            dots[index].classList.add('bg-primary', 'opacity-100');
+            
+            const offset = -index * 100;
+            carouselContainer.style.transform = `translateX(${offset}%)`;
+            currentTestimonial = index;
+        }
+
+        const prevButton = document.querySelector('.testimonial-prev');
+        const nextButton = document.querySelector('.testimonial-next');
+
+        prevButton.addEventListener('click', () => {
+            const newIndex = (currentTestimonial - 1 + testimonialsData.length) % testimonialsData.length;
+            showTestimonial(newIndex);
+        });
+
+        nextButton.addEventListener('click', () => {
+            const newIndex = (currentTestimonial + 1) % testimonialsData.length;
+            showTestimonial(newIndex);
+        });
+
+        // Auto-rotate testimonials
+        setInterval(() => {
+            const newIndex = (currentTestimonial + 1) % testimonialsData.length;
+            showTestimonial(newIndex);
+        }, 5000);
+
+        renderTestimonials();
+
+        // Counter animation
+        const counters = document.querySelectorAll('.counter [data-count]');
+        const speed = 200;
+
+        function animateCounters() {
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-count');
+                let count = 0;
+                const increment = target / speed;
+
+                const timer = setInterval(() => {
+                    count += increment;
+                    if (count > target) {
+                        clearInterval(timer);
+                        counter.innerText = target;
+                    } else {
+                        counter.innerText = Math.ceil(count);
+                    }
+                }, 1);
+            });
+        }
+
+        // Start counter animation when scrolled to
+        const counterSection = document.querySelector('.bg-primary');
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                animateCounters();
+                observer.unobserve(counterSection);
+            }
+        }, { threshold: 0.5 });
+
+        observer.observe(counterSection);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+        // Create particles for hero section
+        function createParticles() {
+            const container = document.querySelector('.particles');
+            const particleCount = Math.floor(window.innerWidth / 10);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 2px and 5px
+                const size = Math.random() * 3 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration and delay
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize particles
+        createParticles();
+
+        // GSAP animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate elements on scroll
+        gsap.utils.toArray('.service-card, .portfolio-item, .process-item, .team-member').forEach(element => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 0,
+                y: 50,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        });
+
+        // Animate section headings
+        gsap.utils.toArray('section h2').forEach(heading => {
+            gsap.from(heading, {
+                scrollTrigger: {
+                    trigger: heading,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 0,
+                y: 30,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        });
+
+        // Floating animation for elements with .floating class
+        gsap.to(".floating", {
+            y: 15,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+    </script>
+</body>
+</html>
